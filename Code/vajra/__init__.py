@@ -23,7 +23,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 import logging 
 import os, crayons
-import psycopg2 as pg
+#import psycopg2 as pg
 import sqlite3 as sqlite
 
 POSTGRES = "postgresql://postgres:postgres@localhost/vajra"
