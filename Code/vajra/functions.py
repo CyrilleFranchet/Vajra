@@ -27,6 +27,7 @@ from vajra.enumeration.azureAd import azureAdEnum
 from vajra.enumeration.azureAzService import  azureAzServiceEnum
 import pandas as pd
 from flask_login import current_user
+from datetime import datetime
 
 
 class thread_with_trace(threading.Thread):
@@ -330,7 +331,7 @@ def getDefaultPhishingConfig(uuid):
     return(default)    
 
 def startStealing(uuid, username):
-    log = (f'<br><span style="color:yellow">[+] {username} incoming!</span>')
+    log = (f'<br><span style="color:yellow">[+] {datetime.now()} {username} incoming!</span>')
     db.session.add(phishingLogs(uuid=uuid, message=log))
     db.session.commit()
     accessToken = stealerAction.getAccessToken(uuid, username)
